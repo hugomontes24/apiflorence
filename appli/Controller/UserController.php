@@ -35,7 +35,7 @@ class UserController
                 echo json_encode($user);
                 break;
             case 'PATCH':
-                $data = (array) json_decode(file_get_contents('php://input'),true);
+                $data = (array) json_decode(file_get_contents('php://input'), true);
 
                 $errors = $this->getValidationErrors($data);
                 if(!empty($errors)){
@@ -51,20 +51,19 @@ class UserController
                     'rows' => $rows
                 ]);
                 break;
+
             case 'DELETE':
                 $rows = $this->UserRepository->delete($id);
                 http_response_code(204);
-                echo json_encode([
-                    'message' => "User id = $id deleted",
-                    'rows' => $rows
-                ]);
+                // echo json_encode([
+                //     'message' => "User id = $id deleted",
+                //     'rows' => $rows
+                // ]);
                 break;
             default:
                 http_response_code(405);
                 header("Allow: GET, PATCH, DELETE");
         }
-
-        
     }
 
     private function processCollectionRequest(string $method): void

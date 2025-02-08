@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 header("Access-Control-Allow-Origin:*");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once "config/config.php"; 
@@ -19,14 +19,16 @@ spl_autoload_register(function($class) {
     }
 });
 
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    http_response_code(200);
+    exit;
+}
+
 set_error_handler('ErrorHandler::handleError'); // mettre en place la gestion des erreurs, les transformer en exceptions
 set_exception_handler('ErrorHandler::handleException'); // mettre en place la gestion des exceptions
 
 header('Content-Type: application/json');
 
-
-
-    // header('Location:public/index.php');
 $parts =  explode("/", $_SERVER["REQUEST_URI"]);
 
 // print_r($parts); // **** a enlever
@@ -34,7 +36,6 @@ $parts =  explode("/", $_SERVER["REQUEST_URI"]);
 if ( !in_array( $parts[3], COLLECTIONS) ) { // si pas dans le tableau des collections
     http_response_code(404);
     exit;
-
 }
 
 
