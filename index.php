@@ -7,10 +7,9 @@ header("Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once "config/config.php"; 
-
 spl_autoload_register(function($class) {
     $directories = ['Entity','Controller','Repository', 'kernel','ErrorHandler'];
-
+    
     foreach($directories as $directory){
         $file = __DIR__ . "/appli/$directory/$class.php";
         if(file_exists($file)){
@@ -41,10 +40,25 @@ if ( !in_array( $parts[3], COLLECTIONS) ) { // si pas dans le tableau des collec
 
 $database = new Database('localhost', DB_BASE, DB_USER, DB_PASS);
 $database->getConnection();
-$repository = new UserRepository($database);
 
-$id = $parts[4] ?? null;
-$itemController = ucfirst( substr( $parts[3],0,-1 )).'Controller';
-$controller = new $itemController($repository) ;  // todo automatiser en utilisant $parts[3]
+$table = convertToPascalCase(substr( $parts[3],0,-1 ));
+if ($table == 'LessonCategorie') { // cas particulier
+    $table = 'LessonCategory';
+}
+var_dump($table);
+$itemRepository = $table .'Repository';
+$Repository = new $itemRepository($database);
 
-$controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
+
+$id = isset($parts[4]) ? (int)$parts[4] : null;
+$itemController = $table.'Controller'; // string
+$Controller = new $itemController($Repository) ;  // todo automatiser en utilisant $parts[3]
+
+$Controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
+
+
+function convertToPascalCase(string $url): string
+{
+   return str_replace('-', '', ucwords($url, '-'));
+}
+

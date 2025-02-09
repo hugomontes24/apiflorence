@@ -1,0 +1,75 @@
+<?php
+class User
+{
+    public const DB_TABLE = 'user';
+
+    private ?int $id = null;
+    private string $name;
+    private int $age;
+    private bool $is_valid;
+
+    // public function __construct(array $data)
+    // {
+    //     $this->id = $data['id'];
+    //     $this->name = $data['name'];
+    //     $this->age = $data['age'];
+    //     $this->is_valid = $data['is_valid'];
+    // }
+
+    
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'age' => $this->age,
+            'is_valid' => $this->is_valid
+        ];
+    }
+
+    public function hydrate(array $data): self
+    {
+        (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
+        (isset ($data['name'])) ?$this->setName( $data['name']): $this->setName('');
+        (isset ($data['age'])) ?$this->setAge( intval($data['age'])): $this->setAge(-1);
+        (isset ($data['is_valid'])) ?$this->setIsValid( boolval($data['is_valid'])): $this->setIsValid(false);
+        return $this;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    } 
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getAge(): int
+    {
+        return $this->age;
+    }
+    public function setAge(int $age): void
+    {
+        $this->age = $age;
+    }
+
+    public function getIsValid(): bool
+    {
+        return $this->is_valid;
+    }
+    public function setIsValid(bool $is_valid): void
+    {
+        $this->is_valid = $is_valid;
+    }
+
+}

@@ -8,7 +8,7 @@ const DB_PASS = 'root';
 const PROJECT_DIR = __DIR__ . '/..';
 
 
-const COLLECTIONS = ['users','Users'];
+const COLLECTIONS = ['users','lessons','lesson-categories'];
 
 
     

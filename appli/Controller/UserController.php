@@ -22,29 +22,32 @@ class UserController
 
     private function processResourceRequest(string $method, string $id): void
     {
-        $user = $this->UserRepository->getOne($id);
-
-        if(!$user){
+        $a_user = $this->UserRepository->getOne($id);
+        if(!$a_user){
             http_response_code(404);
             echo json_encode(['message' => 'User not found']);
             return;
         }
-
+        
+        $User = new User();
+        $User->hydrate($a_user);
         switch($method){
             case 'GET':
-                echo json_encode($user);
+                echo json_encode($User->toArray());
                 break;
             case 'PATCH':
                 $data = (array) json_decode(file_get_contents('php://input'), true);
+                $NewUser = new User();
+                $NewUser->hydrate($data);
 
-                $errors = $this->getValidationErrors($data);
+                $errors = $this->getValidationErrors($NewUser);
                 if(!empty($errors)){
                     http_response_code(422);
                     echo json_encode($errors);
                     break;
                 }
                 
-                $rows = $this->UserRepository->update( $user, $data );
+                $rows = $this->UserRepository->update( $User, $NewUser );
                 http_response_code(200);
                 echo json_encode([
                     'message' => "User id = $id modified",
@@ -71,19 +74,20 @@ class UserController
         switch($method){
             case 'GET':
                 echo json_encode($this->UserRepository->getAll());
-                //$this->getCollection();
                 break;
             case 'POST':
                 $data = (array) json_decode(file_get_contents('php://input'),true);
+                $NewUser = new User();
+                $NewUser->hydrate($data);
 
-                $errors = $this->getValidationErrors($data);
+                $errors = $this->getValidationErrors($NewUser);
                 if(!empty($errors)){
                     http_response_code(422);
                     echo json_encode($errors);
                     break;
                 }
                 
-                $id = $this->UserRepository->create($data);
+                $id = $this->UserRepository->create($NewUser);
                 http_response_code(201);
                 echo json_encode([
                     'message' => 'User created',
@@ -97,19 +101,24 @@ class UserController
     }
 
 
-    private function getValidationErrors(array $data): array
+    private function getValidationErrors(User $user): array
     {
         $errors = [];
-        if(!isset($data['name']) || empty($data['name'])){
+        if(null === $user->getName() || $user->getName() === ''){
             $errors['name'] = 'Name is required';
         }
-        if(!isset($data['age']) || empty($data['age'])){
+        if(null === $user->getAge() || $user->getAge() === ''){
             $errors['age'] = 'Age is required';
         }
-        if( isset($data['age'])  &&  filter_var($data['age'], FILTER_VALIDATE_INT) === false){
+        // if(!isset($data['age']) || empty($data['age'])){
+        //     $errors['age'] = 'Age is required';
+        // }
+        if(null !== $user->getAge() && filter_var( $user->getAge() , FILTER_VALIDATE_INT) === false){
             $errors['age'] = 'Age must be a number';
         }
-        
+        // if( isset($data['age'])  &&  filter_var($data['age'], FILTER_VALIDATE_INT) === false){
+        //     $errors['age'] = 'Age must be a number';
+        // }    
         return $errors;
     }
 
