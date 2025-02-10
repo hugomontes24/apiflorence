@@ -45,7 +45,7 @@ $table = convertToPascalCase(substr( $parts[3],0,-1 ));
 if ($table == 'LessonCategorie') { // cas particulier
     $table = 'LessonCategory';
 }
-var_dump($table);
+//var_dump($table);
 $itemRepository = $table .'Repository';
 $Repository = new $itemRepository($database);
 

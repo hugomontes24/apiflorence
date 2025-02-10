@@ -50,22 +50,32 @@ class LessonRepository
     //     return $this->connection->lastInsertId();
     // }
 
-    public function update(array $current, array $new): int
+    public function update(Lesson $Lesson, Lesson $NewLesson): int
     {
         $query = "UPDATE lesson 
                     SET 
-                        name = :name,
                         duration = :duration,
                         date = :date,
-                        price = :price
+                        price = :price,
+                        id_category = :id_category
                     WHERE id = :id";
         $statement = $this->connection->prepare($query);
-        $statement->bindValue(':name', $new['name'], PDO::PARAM_STR);
-        $statement->bindValue(':duration', $new['duration'], PDO::PARAM_INT);
-        $statement->bindValue(':date', $new['date'], PDO::PARAM_STR);
-        $statement->bindValue(':price', $new['price'], PDO::PARAM_INT);
-        $statement->bindValue(':id', $current['id'], PDO::PARAM_INT);
+        $statement->bindValue(':duration', $NewLesson->getDuration(), PDO::PARAM_INT);
+        $statement->bindValue(':date', $NewLesson->getDate(), PDO::PARAM_STR);
+        $statement->bindValue(':price', $NewLesson->getPrice(), PDO::PARAM_INT);
+        $statement->bindValue(':id_category', $NewLesson->getIdCategory(), PDO::PARAM_INT);
+        $statement->bindValue(':id', $Lesson->getId(), PDO::PARAM_INT);
         $statement->execute();
+        return $statement->rowCount();
+    }
+
+    public function delete(string $id): int
+    {
+        $query = "DELETE FROM lesson WHERE id = :id";
+        $statement = $this->connection->prepare($query);
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->execute();
+        
         return $statement->rowCount();
     }
 }

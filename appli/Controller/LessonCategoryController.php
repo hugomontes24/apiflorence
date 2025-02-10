@@ -16,6 +16,7 @@ class LessonCategoryController
 
     private function processResourceRequest(string $method, int $id): void
     {
+        
         $a_lessonCategory = $this->LessonCategoryRepository->getOne($id);
         if($a_lessonCategory === null){
             http_response_code(404);
@@ -99,6 +100,7 @@ class LessonCategoryController
         if($LessonCategory->getName() === ''){
             $errors['name'] = "Name is required";
         }
+        
     
         return $errors;
     }   

@@ -3,55 +3,57 @@
 {
     public function __construct( private LessonRepository $LessonRepository){}
 
-    public function processRequest( string $method, ?string $id) :void  // le point d'interrogation means nullable
+    public function processRequest( string $method, ?int $id) :void  // le point d'interrogation means nullable
     {
         if($id){  // single resource
             $this->processResourceRequest($method,$id);
-
-        } else { // collection
-            $this->processCollectionRequest($method);
+            return;
         }
+        // collection
+        $this->processCollectionRequest($method);  
     }
 
     public function processResourceRequest(string $method, string $id): void    
     {
-        $lesson = $this->LessonRepository->getOne($id);
+        $a_lesson = $this->LessonRepository->getOne($id);
 
-        if(!$lesson){
+        if(!$a_lesson){
             http_response_code(404);
             echo json_encode(['message' => 'Session not found']);
             return;
         }
 
+        $Lesson = new Lesson();
+        $Lesson->hydrate($a_lesson);
         switch($method){
             case 'GET':
-                echo json_encode($lesson);
+                $LessonDTO = new LessonDTO();
+                $LessonDTO->hydrateFromObject($Lesson);
+                echo json_encode($LessonDTO->toArray());
                 break;
             case 'PATCH':
                 $data = (array) json_decode(file_get_contents('php://input'), true);
+                $NewLesson = new Lesson();
+                $NewLesson->hydrate($data);
 
-                $errors = $this->getValidationErrors($data);
+                $errors = $this->getValidationErrors($NewLesson);
                 if(!empty($errors)){
                     http_response_code(422);
                     echo json_encode($errors);
                     break;
                 }
                 
-                $rows = $this->LessonRepository->update( $lesson, $data );
+                $rows = $this->LessonRepository->update( $Lesson, $NewLesson );
                 http_response_code(200);
                 echo json_encode([
-                    'message' => "Session id = $id modified",
+                    'message' => "Lesson id = $id modified",
                     'rows' => $rows
                 ]);
                 break;
 
             case 'DELETE':
-                // $rows = $this->SessionRepository->delete($id);
-                // http_response_code(204);
-                // echo json_encode([
-                //     'message' => "Session id = $id deleted",
-                //     'rows' => $rows
-                // ]);
+                $rows = $this->LessonRepository->delete($id);
+                http_response_code(204);
                 break;
             default:
                 http_response_code(405);
@@ -92,22 +94,19 @@
         }
     }
     
-    private function getValidationErrors(array $data): array
+    private function getValidationErrors(Lesson $Lesson): array
     {
         $errors = [];
-        if(!isset($data['name']) || empty($data['name'])){
-            $errors['name'] = 'Name is required';
-        }
-        if(!isset($data['date']) || empty($data['date'])){
+        if($Lesson->getDate()===null){
             $errors['date'] = 'Date is required';
         }
-        if(!isset($data['date']) || empty($data['date']) || !$this->isDateTimeValid($data['date'])){
-            $errors['date'] = 'Date is not valid';
+       if($Lesson->getDuration()===-1){
+            $errors['duration'] = 'Duration is required';
         }
-        if( isset($data['price'])  &&  filter_var($data['price'], FILTER_VALIDATE_INT) === false){
-            $errors['price'] = 'Price must be a number';
+        if($Lesson->getPrice()===-1){
+            $errors['price'] = 'Price is required';
         }
-        
+
         return $errors;
     }
 
