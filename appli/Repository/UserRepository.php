@@ -2,17 +2,19 @@
 
 class UserRepository
 {
-    private PDO $connection;
+    // private PDO $connection;
 
-    public function __construct(Database $database)
-    {
-        $this->connection = $database->getConnection();
-    }
+    // public function __construct(Database $database)
+    // {
+    //     $this->connection = $database->getConnection();
+    // }
 
     public function getAll(): array
     {
+        $oPDO = PDOConnection::get();
         $query = "SELECT * FROM user";
-        $statement = $this->connection->query($query);
+        $statement = $oPDO->query($query);
+        // $statement = $this->connection->query($query);
         $data = [];
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
 
@@ -24,11 +26,13 @@ class UserRepository
 
     public function create(User $NewUser): int
     {
+        $oPDO = PDOConnection::get();
         $query = "INSERT INTO user 
                         (name, age, is_valid) 
                     VALUES 
                         (:name, :age, :is_valid)";
-        $statement = $this->connection->prepare($query);
+        $statement = $oPDO->prepare($query);
+        // $statement = $this->connection->prepare($query);
 
         $statement->bindValue(':name', $NewUser->getName(), PDO::PARAM_STR);
         $statement->bindValue(':age', $NewUser->getAge(), PDO::PARAM_INT);
@@ -39,18 +43,21 @@ class UserRepository
 
         $statement->execute();
 
-        return $this->connection->lastInsertId();
+        return $oPDO->lastInsertId();
     }
 
-    public function getOne(string $id): array | false
+    public function getOne(string $id): array 
     {
+        $oPDO = PDOConnection::get();
+
         $query = "SELECT * FROM user WHERE id = :id";
-        $statement = $this->connection->prepare($query);
+        $statement = $oPDO->prepare($query);
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
         $data = $statement->fetch(PDO::FETCH_ASSOC);
         if(!$data){
-            throw new Exception("User not found", 404);
+            // throw new Exception("User not found", 404);
+            return $data = [];
         }
         $data["is_valid"] = (bool)$data["is_valid"];
         return $data;
@@ -58,13 +65,15 @@ class UserRepository
 
     public function update(User $User, User $NewUser): int
     {
+        $oPDO = PDOConnection::get();
+        
         $query = "UPDATE user 
                     SET 
                         name = :name, 
                         age = :age, 
                         is_valid = :is_valid
                     WHERE id = :id";
-        $statement = $this->connection->prepare($query);
+        $statement = $oPDO->prepare($query);
 
         $statement->bindValue(':name', $NewUser->getName(), PDO::PARAM_STR);
         $statement->bindValue(':age', $NewUser->getAge(), PDO::PARAM_INT);
@@ -98,8 +107,10 @@ class UserRepository
 
     public function delete(string $id): int
     {
+        $oPDO = PDOConnection::get();
+
         $query = "DELETE FROM user WHERE id = :id";
-        $statement = $this->connection->prepare($query);
+        $statement = $oPDO->prepare($query);
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
 

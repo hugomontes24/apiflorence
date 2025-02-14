@@ -7,6 +7,7 @@ class Lesson
     private ?DateTime $date= null; 
     private int $duration; // en minutes
     private int $price;
+    private int $nb_max_users;
     private int $id_category;
     private array $users = []; // tableau d'objets User, les élèves inscrits à ce cours
     
@@ -22,6 +23,7 @@ class Lesson
         (isset ($data['duration'])) ?$this->setDuration( intval($data['duration'])): $this->setDuration(-1);
         (isset ($data['price'])) ?$this->setPrice(intval( $data['price'])): $this->setPrice(0);
         (isset ($data['id_category'])) ?$this->setIdCategory( intval($data['id_category'])): $this->setIdCategory(-1);
+        (isset ($data['nb_max_users'])) ?$this->setNbMaxUsers( intval($data['nb_max_users'])): $this->setNbMaxUsers(-1);
         (isset ($data['users'])) ?$this->setUsers($data['users']): $this->setUsers([]);
         return $this;
     }
@@ -33,6 +35,7 @@ class Lesson
             'date' => $this->date,
             'duration' => $this->duration,
             'price' => $this->price,
+            'nb_max_users' => $this->nb_max_users,
             'id_category' => $this->id_category,
         ];
     }
@@ -63,6 +66,14 @@ class Lesson
     public function setDuration(int $duration): void
     {
         $this->duration = $duration;
+    }
+    public function getNbMaxUsers(): int
+    {
+        return $this->nb_max_users;
+    }
+    public function setNbMaxUsers(int $nb_max_users): void
+    {
+        $this->nb_max_users = $nb_max_users;
     }
 
     public function getIdCategory(): int

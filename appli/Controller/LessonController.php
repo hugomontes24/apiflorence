@@ -17,9 +17,9 @@
     {
         $a_lesson = $this->LessonRepository->getOne($id);
 
-        if(!$a_lesson){
+        if(empty($a_lesson)){
             http_response_code(404);
-            echo json_encode(['message' => 'Session not found']);
+            echo json_encode(['message' => 'Session not found with this id']);
             return;
         }
 
