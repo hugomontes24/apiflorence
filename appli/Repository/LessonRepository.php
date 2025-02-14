@@ -49,7 +49,10 @@ class LessonRepository
         $statement = $oPDO->query($query);
         $data = [];
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $data[] = $row;
+            $Lesson = new LessonGetDTO();
+            $Lesson->hydrate($row);
+
+            $data[] = $Lesson->toArray();
         }
         return $data;
     }
