@@ -47,11 +47,12 @@ if ($table == 'LessonCategorie') { // cas particulier
 }
 //var_dump($table);
 $itemRepository = $table .'Repository';
-$Repository = new $itemRepository($database);
+$Repository = new $itemRepository(); // ancienne methode
+// $Repository = new $itemRepository($database);
 
 
 $id = isset($parts[4]) ? (int)$parts[4] : null;
-$itemController = $table.'Controller'; // string
+$itemController = $table.'Controller'; // string 
 $Controller = new $itemController($Repository) ;  // todo automatiser en utilisant $parts[3]
 
 $Controller->processRequest($_SERVER["REQUEST_METHOD"], $id);

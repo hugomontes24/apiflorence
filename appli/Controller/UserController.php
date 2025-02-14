@@ -9,8 +9,7 @@ class UserController
         // $this->repository = new UserRepository(new Database(DB_HOST, DB_BASE, DB_USER, DB_PASS));
     }
 
-
-    public function processRequest( string $method, ?string $id) :void  // le point d'interrogation means nullable
+    public function processRequest( string $method, ?int $id) :void  // le point d'interrogation means nullable
     {
         if($id){  // single resource
             $this->processResourceRequest($method,$id);
@@ -23,9 +22,10 @@ class UserController
     private function processResourceRequest(string $method, string $id): void
     {
         $a_user = $this->UserRepository->getOne($id);
-        if(!$a_user){
+       
+        if(empty($a_user)){
             http_response_code(404);
-            echo json_encode(['message' => 'User not found']);
+            echo json_encode(['message' => 'User not found with this id']);
             return;
         }
         
@@ -37,6 +37,7 @@ class UserController
                 break;
             case 'PATCH':
                 $data = (array) json_decode(file_get_contents('php://input'), true);
+                //var_dump( $data);
                 $NewUser = new User();
                 $NewUser->hydrate($data);
 
