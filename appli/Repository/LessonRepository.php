@@ -2,14 +2,6 @@
 
 class LessonRepository
 {
-    // private PDO $connection;
-
-    // public function __construct(Database $database)
-    // {
-    //     $this->connection = $database->getConnection();
-    // }
-
-    
 
     public function getOne(string $id): array
     {
@@ -25,21 +17,6 @@ class LessonRepository
         }
         return $data;
     }
-    // public function verifyOne(string $id): array
-    // {
-    //     $oPDO = PDOConnection::get();
-
-    //     $query = "SELECT * FROM lesson WHERE id = :id";
-    //     $statement = $oPDO->prepare($query);
-    //     $statement->bindValue(':id', $id, PDO::PARAM_INT);
-    //     $statement->execute();
-    //     $data = $statement->fetch(PDO::FETCH_ASSOC);
-    //     if($data === false){
-    //         $data = [];
-    //     }
-    //     //$data["is_valid"] = (bool)$data["is_valid"];
-    //     return $data;
-    // }
 
     public function getAll(): array
     {
@@ -51,28 +28,13 @@ class LessonRepository
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $Lesson = new LessonGetDTO();
             $Lesson->hydrate($row);
-
+            
             $data[] = $Lesson->toArray();
         }
         return $data;
     }
 
-    // public function create(array $data): string
-    // {
-    //     $query = "INSERT INTO session 
-    //                     (name, age, is_valid) 
-    //                 VALUES 
-    //                     (:name, :age, :is_valid)";
-    //     $statement = $this->connection->prepare($query);
-
-    //     $statement->bindValue(':name', $data['name'], PDO::PARAM_STR);
-    //     $statement->bindValue(':age', $data['age'], PDO::PARAM_INT);
-    //     $statement->bindValue(':is_valid', (bool) $data['is_valid'] ?? false, PDO::PARAM_BOOL);
-    //     $statement->execute();
-
-    //     return $this->connection->lastInsertId();
-    // }
-
+  
     public function update(Lesson $Lesson, Lesson $NewLesson): int
     {
         $oPDO = PDOConnection::get();
@@ -108,3 +70,44 @@ class LessonRepository
 
 
 }
+
+
+ // public function verifyOne(string $id): array
+    // {
+    //     $oPDO = PDOConnection::get();
+
+    //     $query = "SELECT * FROM lesson WHERE id = :id";
+    //     $statement = $oPDO->prepare($query);
+    //     $statement->bindValue(':id', $id, PDO::PARAM_INT);
+    //     $statement->execute();
+    //     $data = $statement->fetch(PDO::FETCH_ASSOC);
+    //     if($data === false){
+    //         $data = [];
+    //     }
+    //     //$data["is_valid"] = (bool)$data["is_valid"];
+    //     return $data;
+    // }
+
+      // public function create(array $data): string
+    // {
+    //     $query = "INSERT INTO session 
+    //                     (name, age, is_valid) 
+    //                 VALUES 
+    //                     (:name, :age, :is_valid)";
+    //     $statement = $this->connection->prepare($query);
+
+    //     $statement->bindValue(':name', $data['name'], PDO::PARAM_STR);
+    //     $statement->bindValue(':age', $data['age'], PDO::PARAM_INT);
+    //     $statement->bindValue(':is_valid', (bool) $data['is_valid'] ?? false, PDO::PARAM_BOOL);
+    //     $statement->execute();
+
+    //     return $this->connection->lastInsertId();
+    // }
+
+
+     // private PDO $connection;
+
+    // public function __construct(Database $database)
+    // {
+    //     $this->connection = $database->getConnection();
+    // }

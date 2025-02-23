@@ -23,13 +23,13 @@
             return;
         }
 
-        $Lesson = new Lesson();
+        $Lesson = new Lesson(); // TODO à enlever ou retravailler
         $Lesson->hydrate($a_lesson);
         switch($method){
             case 'GET':
-                $LessonDTO = new LessonDTO();
-                $LessonDTO->hydrateFromObject($Lesson);
-                echo json_encode($LessonDTO->toArray());
+                $LessonGetDTO = new LessonGetDTO();
+                $LessonGetDTO->hydrate($a_lesson);
+                echo json_encode($LessonGetDTO->toArray());
                 break;
             case 'PATCH':
                 $data = (array) json_decode(file_get_contents('php://input'), true);

@@ -6,6 +6,7 @@ class LessonDTO
     private ?DateTime $date= null; 
     private int $duration; // en minutes
     private int $price;
+    private int $nbMaxUsers;
     private ?LessonCategory $lessonCategory= null;
     
 
@@ -19,7 +20,7 @@ class LessonDTO
         (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
         (isset ($data['duration'])) ?$this->setDuration( intval($data['duration'])): $this->setDuration(-1);
         (isset ($data['price'])) ?$this->setPrice(intval( $data['price'])): $this->setPrice(0);
-
+        (isset ($data['nb_max_users'])) ? $this->setNbMaxUsers($data['nb_max_users']) : $this->setNbMaxUsers(0);
         
         $LessonRepository = new LessonRepository(new Database('localhost', DB_BASE, DB_USER, DB_PASS));
         $data1 = $LessonRepository->getOne($data['id_category']);
@@ -33,6 +34,7 @@ class LessonDTO
 
     public function hydrateFromObject(Lesson $Lesson): self
     {
+        var_dump($Lesson);
         ($Lesson->getId() !== null) ?$this->setId( $Lesson->getId()): $this->setId(-1); 
         ( $Lesson->getDate()!== null ) ?$this->setDate($Lesson->getDate()): $this->setDate(null);
         ( $Lesson->getDuration()!== null ) ?$this->setDuration($Lesson->getDuration()): $this->setDuration(-1);
@@ -45,11 +47,11 @@ class LessonDTO
                 $LessonCategory = new LessonCategory();
                 $LessonCategory->hydrate($data);
                 $this->setLessonCategory($LessonCategory);            
-                return $this;
             }
+        }else{
+            $this->setLessonCategory(null);
         }
         
-        $this->setLessonCategory(null);
         return $this;
     }
 
@@ -94,6 +96,17 @@ class LessonDTO
     public function setPrice(int $price): void
     {
         $this->price = $price;
+    }
+    public function getNbMaxUsers(): int
+    {
+        return $this->nbMaxUsers;
+    }
+
+    public function setNbMaxUsers(int $nbMaxUsers): self
+    {
+        $this->nbMaxUsers = $nbMaxUsers;
+
+        return $this;
     }
     public function getLessonCategory(): LessonCategory
     {

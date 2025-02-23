@@ -16,14 +16,15 @@ class Lesson
     {
         if(isset($data['date'])){
             $DateObject = DateTime::createFromFormat('Y-m-d H:i:s', $data['date']);
+            // var_dump($DateObject);
             ($DateObject instanceof DateTime) ?$this->setDate($DateObject): $this->setDate(null);
         }
 
         (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
         (isset ($data['duration'])) ?$this->setDuration( intval($data['duration'])): $this->setDuration(-1);
         (isset ($data['price'])) ?$this->setPrice(intval( $data['price'])): $this->setPrice(0);
-        (isset ($data['id_category'])) ?$this->setIdCategory( intval($data['id_category'])): $this->setIdCategory(-1);
-        (isset ($data['nb_max_users'])) ?$this->setNbMaxUsers( intval($data['nb_max_users'])): $this->setNbMaxUsers(-1);
+        (isset ($data['nbMaxUsers'])) ?$this->setNbMaxUsers( intval($data['nbMaxUsers'])): $this->setNbMaxUsers(-1);
+        (isset ($data['idCategory'])) ?$this->setIdCategory( intval($data['idCategory'])): $this->setIdCategory(-1);
         (isset ($data['users'])) ?$this->setUsers($data['users']): $this->setUsers([]);
         return $this;
     }
@@ -84,7 +85,7 @@ class Lesson
     {
         $this->id_category = $id_category;
     }
-    public function getDate(): DateTime
+    public function getDate(): DateTime|null
     {
         return $this->date;
     }
