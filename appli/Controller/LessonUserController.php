@@ -5,7 +5,7 @@ class LessonUserController
         private LessonUserRepository $LessonUserRepository
     ){}
 
-    public function processRequest(string $method, ?int $id): void
+    public function processRequest(string $method, ?int $id, ?string $email, ?string $reservation, ?int $user_id): void
     {
         if($id !== null){
             $this->processResourceRequest($method, $id);

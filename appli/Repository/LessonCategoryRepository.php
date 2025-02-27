@@ -1,12 +1,6 @@
 <?php
 class LessonCategoryRepository
 {
-    // private PDO $connection;
-
-    // public function __construct(Database $database)
-    // {
-    //     $this->connection = $database->getConnection();
-    // }
 
     public function getAll(): array
     {
@@ -35,6 +29,7 @@ class LessonCategoryRepository
             throw new Exception("LessonCategory not found", 404);
         }
         return $data;
+        
     }
 
     public function create(LessonCategory $LessonCategory): int
@@ -71,7 +66,6 @@ class LessonCategoryRepository
     public function delete(int $id): int
     {
         $oPDO = PDOConnection::get();
-
         $sql = "DELETE FROM lesson_category WHERE id = :id";
         $stmt = $oPDO->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);

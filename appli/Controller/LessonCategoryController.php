@@ -4,7 +4,7 @@ class LessonCategoryController
 {
     public function __construct( private LessonCategoryRepository $LessonCategoryRepository) {}
 
-    public function processRequest(string $method, ?int $id): void
+    public function processRequest(string $method, ?int $id, ?string $email, ?string $reservation, ?int $user_id): void
     {
         if($id !== null){
             $this->processResourceRequest($method, $id);

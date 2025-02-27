@@ -9,17 +9,42 @@ class UserController
         // $this->repository = new UserRepository(new Database(DB_HOST, DB_BASE, DB_USER, DB_PASS));
     }
 
-    public function processRequest( string $method, ?int $id) :void  // le point d'interrogation means nullable
+    public function processRequest( string $method, ?int $id, ?string $email, ?string $reservations, ?int $user_id) :void  // le point d'interrogation means nullable
     {
         if($id){  // single resource
             $this->processResourceRequest($method,$id);
-
-        } else { // collection
+        } elseif ($email) { // single resource
+            $this->processResourceRequestByEmail($method,$email);
+        }
+        else { // collection
             $this->processCollectionRequest($method);
         }
     }
 
-    private function processResourceRequest(string $method, string $id): void
+    private function processResourceRequestByEmail(string $method, string $email): void
+    {
+        $a_user = $this->UserRepository->getOneByEmail($email);
+
+        if(empty($a_user)){
+            http_response_code(404);
+            echo json_encode(['message' => 'User not found with this email']);
+            return;
+        }
+
+        $User = new User();
+        $User->hydrate($a_user);
+        switch($method){
+            case 'GET':
+                echo json_encode($User->toArray());
+                break;
+            default:
+                http_response_code(405);
+                header("Allow: GET, PATCH, DELETE");
+
+        }
+    }
+
+    private function processResourceRequest(string $method, int $id): void
     {
         $a_user = $this->UserRepository->getOne($id);
        
@@ -89,6 +114,12 @@ class UserController
                 }
                 
                 $id = $this->UserRepository->create($NewUser);
+                if($id === -1){
+                    http_response_code(409);
+                    echo json_encode(['message' => 'User with this email already exists']);
+                    break;
+                }
+
                 http_response_code(201);
                 echo json_encode([
                     'message' => 'User created',
@@ -107,6 +138,9 @@ class UserController
         $errors = [];
         if(null === $user->getName() || $user->getName() === ''){
             $errors['name'] = 'Name is required';
+        }
+        if(null === $user->getEmail() || $user->getEmail() === ''){
+            $errors['email'] = 'Email is required';
         }
         if(null === $user->getAge() || $user->getAge() === ''){
             $errors['age'] = 'Age is required';

@@ -14,6 +14,20 @@ class LessonRepository
         $data = $statement->fetch(PDO::FETCH_ASSOC);
         if(!$data){
             $data = [];
+            return $data;
+        }
+        // retrouver tous les users associés à la lesson
+        $query = "SELECT * FROM lesson_user WHERE lesson_id = :id";
+        $statement = $oPDO->prepare($query);
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->execute();
+        
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){ 
+            $userRepository = new UserRepository();
+            $User = $userRepository->getOne($row["user_id"]); 
+            if($User !== null){
+                $data["users"][] = $User;
+            }
         }
         return $data;
     }

@@ -8,6 +8,8 @@ class LessonGetDTO
     private int $price;
     private int $nbMaxUsers;
     private int $idCategory;
+    private array $users = []; // tableau d'objets User, les élèves inscrits à ce cours
+
 
     public function hydrate(array $data): self
     {
@@ -21,20 +23,32 @@ class LessonGetDTO
         (isset ($data['price'])) ?$this->setPrice(intval( $data['price'])): $this->setPrice(0);
         (isset ($data['nb_max_users'])) ? $this->setNbMaxUsers($data['nb_max_users']) : $this->setNbMaxUsers(0);
         (isset ($data['id_category'])) ? $this->setIdCategory($data['id_category']) : $this->setIdCategory(-1); 
+        (isset ($data['users'])) ?$this->setUsers($data['users']): $this->setUsers([]);
+
         return $this;
     }
 
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'date' => $this->date,
-            'duration' => $this->duration,
-            'price' => $this->price,
-            'nbMaxUsers' => $this->nbMaxUsers,
-            'idCategory' => $this->idCategory
+            'id' => $this->getId(),
+            'date' => $this->getDate(),
+            'duration' => $this->getDuration(),
+            'price' => $this->getPrice(),
+            'nbMaxUsers' => $this->getNbMaxUsers(),
+            'idCategory' => $this->getIdCategory(),
+            'users' => $this->getUsers()
         ];
     }
+
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
+    public function setUsers(array $users): void
+    {
+        $this->users = $users;
+    }   
 
     public function getId(): int
     {

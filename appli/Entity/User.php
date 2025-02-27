@@ -5,6 +5,7 @@ class User
 
     private ?int $id = null;
     private string $name;
+    private string $email;
     private int $age;
     private bool $is_valid;
 
@@ -22,6 +23,7 @@ class User
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'email' => $this->email,
             'age' => $this->age,
             'is_valid' => $this->is_valid
         ];
@@ -31,6 +33,7 @@ class User
     {
         (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
         (isset ($data['name'])) ?$this->setName( $data['name']): $this->setName('');
+        (isset ($data['email'])) ?$this->setEmail( $data['email']): $this->setEmail('');
         (isset ($data['age'])) ?$this->setAge( intval($data['age'])): $this->setAge(-1);
         (isset ($data['is_valid'])) ?$this->setIsValid( boolval($data['is_valid'])): $this->setIsValid(false);
         return $this;
@@ -52,6 +55,15 @@ class User
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+    
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     public function getAge(): int

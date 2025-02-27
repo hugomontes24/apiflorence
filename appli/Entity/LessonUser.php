@@ -9,6 +9,12 @@ class LessonUser {
     private int $user_id;
     private bool $is_paid = false;
 
+    public function __construct(int $lesson_id=null, int $user_id=null, bool $is_paid=null) {
+        $this->lesson_id = $lesson_id;
+        $this->user_id = $user_id;
+        $this->is_paid = $is_paid;  
+    }  
+
     public function hydrate(array $data): self {
         (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
         (isset ($data['lesson_id'])) ?$this->setLessonId( intval($data['lesson_id'])): $this->setLessonId(-1);

@@ -1,14 +1,7 @@
 <?php
 
 class LessonUserRepository
-{   
-    // private PDO $connection;   
-
-    // public function __construct(Database $database)
-    // {
-    //     $this->connection = $database->getConnection();
-    // }
-
+{  
     public function create(LessonUser $LessonUser): int
     {
         $oPDO = PDOConnection::get();
@@ -54,7 +47,7 @@ class LessonUserRepository
         return $data;
     }
 
-    public function delete(string $id): int
+    public function delete(int $id): int
     {
         $oPDO = PDOConnection::get();
 
@@ -65,16 +58,20 @@ class LessonUserRepository
 
         return $statement->rowCount();
     }
-
-    public function countUsersByLessonId(int $lesson_id): int
+    public function deleteWithIds(int $lesson_id, int $user_id): int
     {
         $oPDO = PDOConnection::get();
 
-        $sql = "SELECT COUNT(*) FROM lesson_user WHERE lesson_id = :lesson_id";
-        $stmt = $oPDO->prepare($sql);
-        $stmt->bindValue(':lesson_id', $lesson_id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchColumn();
+        $query = "DELETE FROM lesson_user 
+                WHERE lesson_id = :lesson_id 
+                AND   user_id = :user_id 
+                LIMIT 1";
+        $statement = $oPDO->prepare($query);
+        $statement->bindValue(':lesson_id', $lesson_id, PDO::PARAM_INT);
+        $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->rowCount();
     }
 
     public function registeredUsers(int $lesson_id): array
@@ -93,9 +90,28 @@ class LessonUserRepository
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             $data[] = $row["id"];
         }
-
         return $data;
+    }
 
+
+    public function countUsersByLessonId(int $lesson_id): int
+    {
+        $oPDO = PDOConnection::get();
+
+        $sql = "SELECT COUNT(*) FROM lesson_user WHERE lesson_id = :lesson_id";
+        $stmt = $oPDO->prepare($sql);
+        $stmt->bindValue(':lesson_id', $lesson_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
   
 }
+
+
+ 
+    // private PDO $connection;   
+
+    // public function __construct(Database $database)
+    // {
+    //     $this->connection = $database->getConnection();
+    // }
