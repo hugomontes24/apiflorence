@@ -51,16 +51,16 @@ if(isset($parts[4]) && filter_var($parts[4], FILTER_VALIDATE_INT) !== false) { /
     $email = $parts[4];
 }
 
-$reservations = isset($parts[5]) ? $parts[5] : null;
-if($reservations){
-    if(isset($parts[6]) && filter_var($parts[4], FILTER_VALIDATE_INT) !== false) { 
+$parts5 = isset($parts[5]) ? $parts[5] : null;
+if($parts5 == 'reservations'){
+    if(isset($parts[6]) && filter_var($parts[6], FILTER_VALIDATE_INT) !== false) { 
         $idUser =(int)$parts[6]; // verification int iduser dans reservation est int
     }
 }
 $itemController = $table.'Controller'; // string 
 $Controller = new $itemController($Repository, $Mapper) ;  // todo automatiser en utilisant $parts[3]
 
-$Controller->processRequest($_SERVER["REQUEST_METHOD"], $id, $email , $reservations, $idUser);
+$Controller->processRequest($_SERVER["REQUEST_METHOD"], $id, $email , $parts5, $idUser);
 
 
 function convertToPascalCase(string $url): string

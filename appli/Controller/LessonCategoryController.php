@@ -4,15 +4,49 @@ class LessonCategoryController
 {
     public function __construct( private LessonCategoryRepository $LessonCategoryRepository) {}
 
-    public function processRequest(string $method, ?int $id, ?string $email, ?string $reservation, ?int $user_id): void
+    public function processRequest(string $method, ?int $id, ?string $email, ?string $lessons, ?int $user_id): void
     {
         if($id !== null){
+            if($lessons == "lessons"){
+                $this->processResourceLessonsRequest($method, $id, $user_id);
+                return;
+            }
             $this->processResourceRequest($method, $id);
             return;
         }
         
         $this->processCollectionRequest($method);
     }
+
+    private function processResourceLessonsRequest(string $method, int $id, ?int $user_id): void
+    {
+        $a_lessonCategory = $this->LessonCategoryRepository->getOne($id); 
+        if(empty($a_lessonCategory)){
+            http_response_code(404);
+            echo json_encode(['message' => 'Category not found with this id']);
+            return;
+        }  
+        switch($method){
+            case 'GET':
+                $LessonRepository = new LessonRepository();
+                $lessons = $LessonRepository->getAllByIdCategory($id);
+                echo json_encode($lessons);
+                break;
+
+            default:
+                http_response_code(405);
+                header("Allow: GET");
+            }
+
+
+
+
+
+
+    }
+
+
+
 
     private function processResourceRequest(string $method, int $id): void
     {

@@ -99,7 +99,7 @@
                     break;
                 }
                 
-                $rows = $this->LessonRepository->update( $Lesson, $NewLesson );
+                $rows = $this->LessonRepository->update( $Lesson->getId(), $NewLesson );
                 http_response_code(200);
                 echo json_encode([
                     'message' => "Lesson id = $id modified",
@@ -124,26 +124,28 @@
             case 'GET':
                 $lessons = $this->LessonRepository->getAll();
                 echo json_encode($lessons);
-                // $sessions = $this->SessionRepository->getAll();
-                // echo json_encode($sessions);
                 break;
             case 'POST':
-                // $data = (array) json_decode(file_get_contents('php://input'), true);
+                $data = (array) json_decode(file_get_contents('php://input'), true);
+                
+                $Lesson = new Lesson(); // TODO à enlever ou retravailler
+                $Lesson->hydrate($data);
 
-                // $errors = $this->getValidationErrors($data);
-                // if(!empty($errors)){
-                //     http_response_code(422);
-                //     echo json_encode($errors);
-                //     break;
-                // }
+                $errors = $this->getValidationErrors($Lesson);
+                if(!empty($errors)){
+                    http_response_code(422);
+                    echo json_encode($errors);
+                    break;
+                }
 
-                // $id = $this->SessionRepository->create($data);
-                // http_response_code(201);
-                // echo json_encode([
-                //     'message' => "Session created",
-                //     'id' => $id
-                // ]);
+                $id = $this->LessonRepository->create($Lesson);
+                http_response_code(201);
+                echo json_encode([
+                    'message' => "Lesson created",
+                    'id' => $id
+                ]);
                 break;
+
             default:
                 http_response_code(405);
                 header("Allow: GET, POST");

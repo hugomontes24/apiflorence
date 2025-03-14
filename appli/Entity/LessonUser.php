@@ -9,17 +9,19 @@ class LessonUser {
     private int $user_id;
     private bool $is_paid = false;
 
-    public function __construct(int $lesson_id=null, int $user_id=null, bool $is_paid=null) {
-        $this->lesson_id = $lesson_id;
-        $this->user_id = $user_id;
-        $this->is_paid = $is_paid;  
-    }  
+    public function __construct(?int $lessonId = null, ?int $userId = null, ?bool $isPaid = false) {
+        $this->lesson_id = $lessonId ?? -1;
+        $this->user_id = $userId ?? -1;
+        $this->is_paid = $isPaid;
+    }
 
-    public function hydrate(array $data): self {
-        (isset ($data['id'])) ?$this->setId( intval($data['id'])): $this->setId(-1);
-        (isset ($data['lesson_id'])) ?$this->setLessonId( intval($data['lesson_id'])): $this->setLessonId(-1);
-        (isset ($data['user_id'])) ?$this->setUserId( intval($data['user_id'])): $this->setUserId(-1);
-        (isset ($data['is_paid'])) ?$this->setIsPaid(boolval($data['is_paid'])): $this->setIsPaid(false);
+    public function hydrate(array $data): self
+    {
+        $this->setId($data['id'] ?? -1);
+        $this->setLessonId($data['lesson_id'] ?? -1);
+        $this->setUserId($data['user_id'] ?? -1);
+        $this->setIsPaid($data['is_paid'] ?? false);
+
         return $this;
     }
 

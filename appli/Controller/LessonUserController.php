@@ -17,7 +17,6 @@ class LessonUserController
 
     private function processResourceRequest(string $method, int $id)
     {
-        // var_dump($id); 
         $a_lessonUser = $this->LessonUserRepository->getOne($id);
         if(empty($a_lessonUser )){
             http_response_code(404);
@@ -105,10 +104,10 @@ class LessonUserController
             }else{      
                 $errors['lesson_verify_id'] = "Lesson id is invalid";
             }
-
             
             return $errors;
         }
+        return [];
     }
 
     private function verifyUserId(int $user_id): bool  // vérification de l'existence de la lesson, du cours
