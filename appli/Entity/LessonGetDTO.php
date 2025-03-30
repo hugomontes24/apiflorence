@@ -8,7 +8,8 @@ class LessonGetDTO
     private int $price;
     private int $nbMaxUsers;
     private int $idCategory;
-    private array $users = []; // tableau d'objets User, les élèves inscrits à ce cours
+    private array $reservations = []; // tableau d'ids $reservations => $users
+    // private array $users = []; // tableau d'objets User, les élèves inscrits à ce cours
 
 
     public function hydrate(array $data): self
@@ -23,7 +24,8 @@ class LessonGetDTO
         (isset ($data['price'])) ?$this->setPrice(intval( $data['price'])): $this->setPrice(0);
         (isset ($data['nb_max_users'])) ? $this->setNbMaxUsers($data['nb_max_users']) : $this->setNbMaxUsers(0);
         (isset ($data['id_category'])) ? $this->setIdCategory($data['id_category']) : $this->setIdCategory(-1); 
-        (isset ($data['users'])) ?$this->setUsers($data['users']): $this->setUsers([]);
+        (isset ($data['reservations'])) ?$this->setReservations($data['reservations']): $this->setReservations([]);
+        // (isset ($data['users'])) ?$this->setUsers($data['users']): $this->setUsers([]);
 
         return $this;
     }
@@ -37,18 +39,19 @@ class LessonGetDTO
             'price' => $this->getPrice(),
             'nbMaxUsers' => $this->getNbMaxUsers(),
             'idCategory' => $this->getIdCategory(),
-            'users' => $this->getUsers()
+            'reservations' => $this->getReservations()
+            // 'users' => $this->getUsers()
         ];
     }
-
-    public function getUsers(): array
+    public function getReservations(): array
     {
-        return $this->users;
+        return $this->reservations;
     }
-    public function setUsers(array $users): void
+    public function setReservations(array $reservations): void
     {
-        $this->users = $users;
-    }   
+        $this->reservations = $reservations;
+    }
+
 
     public function getId(): int
     {

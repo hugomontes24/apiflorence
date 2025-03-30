@@ -3,8 +3,6 @@
 class PDOConnection
 {
     private static ?\PDO $pdo = null;
-
-
     public static function get(): PDO
     {
         if(is_null(self::$pdo)){
@@ -13,12 +11,11 @@ class PDOConnection
         return self::$pdo;
     }
 
-
     private static function createPdoInstance(): PDO
     {
 
         try{
-            $oPdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_BASE.";charset=utf8","root","root" );
+            $oPdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_BASE.";charset=utf8",DB_USER,DB_PASS);
             $oPdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             if(defined('DB_SQL_DEBUG')){

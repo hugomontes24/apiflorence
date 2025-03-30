@@ -49,7 +49,7 @@
                         break;    
                     }   
                     //$User->setPassword(password_hash($User->getPassword(), PASSWORD_DEFAULT));
-                     $a_user['id'] = $UserRepository->create($User);                
+                    $a_user['id'] = $UserRepository->create($User);                
                  }
                 // 4 ajouter l user a la lesson
                 $LessonUser = new LessonUser($id, $a_user['id'], false);
