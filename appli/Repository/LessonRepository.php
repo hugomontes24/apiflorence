@@ -90,9 +90,11 @@ class LessonRepository
             $statementUser->execute();
             
             while($row1 = $statementUser->fetch(PDO::FETCH_ASSOC)){ 
-                $User = $userRepository->getOne($row1["user_id"]); 
-                if($User !== null){
-                    $row["users"][] = $User;
+                $a_user = $userRepository->getOne($row1["user_id"]); 
+                if(!empty($a_user)){
+                    $a_user["reservation_id"] = $row1["id"]; // id lesson_user = reservation_id
+                    $row["reservations"][$row1["id"]] = $a_user;
+                    // $row["users"][] = $a_user;
                 }
             }
             $Lesson = new LessonGetDTO();

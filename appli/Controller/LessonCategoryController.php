@@ -38,15 +38,7 @@ class LessonCategoryController
                 header("Allow: GET");
             }
 
-
-
-
-
-
     }
-
-
-
 
     private function processResourceRequest(string $method, int $id): void
     {
@@ -63,6 +55,7 @@ class LessonCategoryController
             case 'GET':
                 echo json_encode($LessonCategory->toArray());
                 break;
+
             case 'PATCH':
                 $data = (array) json_decode(file_get_contents('php://input'), true);
                 $NewLessonCategory = new LessonCategory();
@@ -81,6 +74,7 @@ class LessonCategoryController
                     'message' => "LessonCategory id = $id modified",
                     'rows' => $rows
                 ]);
+
                 break;
 
             case 'DELETE':

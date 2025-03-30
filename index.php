@@ -25,14 +25,17 @@ set_error_handler('ErrorHandler::handleError'); // mettre en place la gestion de
 set_exception_handler('ErrorHandler::handleException'); // mettre en place la gestion des exceptions
 header('Content-Type: application/json');
 
+$index = 3;  // en prod index = 2
 $parts =  explode("/", $_SERVER["REQUEST_URI"]);
+// $parts = ['', 'florence', 'apiFlorence', 'users'];
+// $parts = ['bienveillance.ddns.net','api','users']; en prod $parts comporte un segment en moins
 
-if ( !in_array( $parts[3], COLLECTIONS) ) { // si pas dans le tableau des collections
+if ( !in_array( $parts[$index], COLLECTIONS) ) { // si pas dans le tableau des collections
     http_response_code(404);
     exit;
 }
 
-$table = convertToPascalCase(substr( $parts[3],0,-1 ));
+$table = convertToPascalCase(substr( $parts[$index],0,-1 ));
 if ($table == 'LessonCategorie') { // cas particulier
     $table = 'LessonCategory';
 }
@@ -45,16 +48,16 @@ $Mapper = new $itemMapper();
 $id = null;
 $email = null;
 $idUser = null;
-if(isset($parts[4]) && filter_var($parts[4], FILTER_VALIDATE_INT) !== false) { // vérifier que c'est un int
-    $id = (int)$parts[4];
-}elseif(isset($parts[4]) &&  filter_var($parts[4], FILTER_VALIDATE_EMAIL) !== false) { // si que c'est un email
-    $email = $parts[4];
+if(isset($parts[$index+1]) && filter_var($parts[$index+1], FILTER_VALIDATE_INT) !== false) { // vérifier que c'est un int
+    $id = (int)$parts[$index+1];
+}elseif(isset($parts[$index+1]) &&  filter_var($parts[$index+1], FILTER_VALIDATE_EMAIL) !== false) { // si que c'est un email
+    $email = $parts[$index+1];
 }
 
-$parts5 = isset($parts[5]) ? $parts[5] : null;
-if($parts5 == 'reservations'){
-    if(isset($parts[6]) && filter_var($parts[6], FILTER_VALIDATE_INT) !== false) { 
-        $idUser =(int)$parts[6]; // verification int iduser dans reservation est int
+$parts5 = isset($parts[$index+2]) ? $parts[$index+2] : null;
+if($parts5 === 'reservations'){
+    if(isset($parts[$index+3]) && filter_var($parts[$index+3], FILTER_VALIDATE_INT) !== false) { 
+        $idUser =(int)$parts[$index+3]; // verification int iduser dans reservation est int
     }
 }
 $itemController = $table.'Controller'; // string 
